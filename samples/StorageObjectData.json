@@ -1,0 +1,19 @@
+{
+    "kind": "storage#object",
+    "id": "storage-bucket-for-txt-files/test_1.csv/1753611716851408",
+    "selfLink": "https://www.googleapis.com/storage/v1/b/storage-bucket-for-txt-files/o/test_1.csv",
+    "name": "test_1.csv",
+    "bucket": "storage-bucket-for-txt-files",
+    "generation": "1753611716851408",
+    "metageneration": "1",
+    "contentType": "text/csv",
+    "timeCreated": "2025-07-27T10:21:56.856Z",
+    "updated": "2025-07-27T10:21:56.856Z",
+    "storageClass": "STANDARD",
+    "timeStorageClassUpdated": "2025-07-27T10:21:56.856Z",
+    "size": "22",
+    "md5Hash": "+41RL1Xv5/1z8L7+7JIdFw==",
+    "mediaLink": "https://storage.googleapis.com/download/storage/v1/b/storage-bucket-for-txt-files/o/test_1.csv?generation=1753611716851408&alt=media",
+    "crc32c": "NHPxcA==",
+    "etag": "CNDt09vo3I4DEAE="
+}
