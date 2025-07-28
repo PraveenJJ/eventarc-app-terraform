@@ -14,7 +14,7 @@ This repository provides an automated setup for Eventarc triggers on Google Clou
     Download and install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install).
 
 - **Terraform**  
-    Download [Terraform (AMD64)](https://www.terraform.io/downloads.html), extract the ZIP, and move `terraform.exe` to `C:\terraform`.  
+    Download [Terraform (AMD64)](https://developer.hashicorp.com/terraform/install), extract the ZIP, and move `terraform.exe` to `C:\terraform`.  
     Add `C:\terraform` to your system `PATH` environment variable.
 
 - **Docker Desktop**  
