@@ -1,55 +1,177 @@
-Brief introduction of how this repo was designed to setup eventarc triggers for cloud storage and firestore events.
+# Eventarc Triggers Setup for Cloud Storage and Firestore Events
 
-Prerequisites
-Design two REST POST APIs using Java Spring boot. Here's the reference for the APIs needed: https://github.com/PraveenJJ/eventarc-app
-Download GCloud CLI and install it.
-Download terraform (choose AMD64 option to download)
-Extract the terraform zip --> create terrform folder in C drive & move "terraform.exe" to C:\terraform
-Add this C:\terraform to path under system environment variables.
-Download docker desktop and make ensure engine is running.
+This repository provides an automated setup for Eventarc triggers on Google Cloud Storage and Firestore events using Terraform and Java Spring Boot REST APIs.
 
-Instructions
-Create AR
-Authenticate with gcloud cli to create default credentials "gcloud auth application-default login"
-create a terraform script folder like this.
-Add the script to create a Artifact registry repo for docker
-Enable artifact registry api "gcloud services enable artifactregistry.googleapis.com", this can also be done via the console.
-in the root folder path, execute "terraform init", then "terraform apply", type "yes" when prompted
-This will now create a artifact registry for docker in GCP.
+---
 
-Push docker image to AR
-NOw package the application "mvn clean package"
-Ensure docker desktop is up and running & then Build docker image for the packaged application "docker build -t eventarc-app:latest ."
-Now authenticate docker with GCP "gcloud auth configure-docker us-east1-docker.pkg.dev"
-Create remote Tag for the docker image "docker tag eventarc-app:latest us-east1-docker.pkg.dev/hallowed-valve-466712-m0/eventarc-app-docker-repo/eventarc-app:latest"
-Push the docker image to AR "docker push us-east1-docker.pkg.dev/hallowed-valve-466712-m0/eventarc-app-docker-repo/eventarc-app:latest"
+## Prerequisites
 
-Deploy docker image from AR to Cloudrun
-Create the terraform script for cloudrun
-Enable cloud run API "gcloud services enable run.googleapis.com", this can also be done via console.
-Execute "terraform plan" & "terraform apply", type "yes" when prompted
-This will deploy the service in cloud run using docker image from AR.
-On GCP console CLoudrun, service url will be visible, copy and test the service using POSTMAN.
+- **Java Spring Boot REST APIs**  
+    Design two REST POST APIs using Java Spring Boot.  
+    Reference: [eventarc-app](https://github.com/PraveenJJ/eventarc-app)
 
-Create cloud storage
-Create the terraform script for cloud storage
-No need to enable cloud storage manually, as it is enabled by default.
-Execute "terraform plan" & "terraform apply", type "yes" when prompted
-This will create a bucket in cloud storage console. Now upload few sample files via console into the bucket and access them via the public url. File should open via public url.
+- **Google Cloud CLI**  
+    Download and install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install).
 
-Create firestore db
-Enable firestore API via console.
-Using terraform scripts to create firestore db don't work properly, hence it is recommended to use GCP console to create them.
-Now on GCP firestore db console Click "Start Collection" --> enter a table name "users" -> field name and value "name" --> "jack" --> click "SAVE". Data is now saved to firestore db.
+- **Terraform**  
+    Download [Terraform (AMD64)](https://www.terraform.io/downloads.html), extract the ZIP, and move `terraform.exe` to `C:\terraform`.  
+    Add `C:\terraform` to your system `PATH` environment variable.
 
-Create eventarc trigger for cloud storage
-Create the terraform script for eventarc trigger for cloud storage
-Enable Eventarc API via GCP console
-Execute "terraform plan" & "terraform apply", type "yes" when prompted
-Trigger is now successfully created & the same can be verified under CLoudrun --> service ---> triggers.
-Upload a new file to cloud storage, this will automatically trigger an API call to cloud run service.
+- **Docker Desktop**  
+    Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/). Ensure the Docker engine is running.
 
-Create eventarc trigger for firestore db
-Using terraform scripts to create eventarc trigger for firestore db don't work properly, hence it is recommended to use GCP console to create them.
-Once the Trigger is created via console verify it under CLoudrun --> service ---> triggers.
-Now on GCP firestore db console Under table "users" --> add document --> field name and value "name" --> "julie" --> click "SAVE". Data is now saved to firestore db, and it also automatically triggers an API call to cloud run service.
+---
+
+## Instructions
+
+### 1. Create Artifact Registry
+
+Authenticate with Google Cloud CLI:
+
+```sh
+gcloud auth application-default login
+```
+
+Create a folder for your Terraform scripts and add the script to create an Artifact Registry repository for Docker.
+
+Enable the Artifact Registry API:
+
+```sh
+gcloud services enable artifactregistry.googleapis.com
+```
+
+Initialize and apply Terraform:
+
+```sh
+terraform init
+terraform apply
+# Type 'yes' when prompted
+```
+
+This will create a Docker Artifact Registry in GCP.
+
+---
+
+### 2. Build and Push Docker Image to Artifact Registry
+
+Package the application:
+
+```sh
+mvn clean package
+```
+
+Build the Docker image:
+
+```sh
+docker build -t eventarc-app:latest .
+```
+
+Authenticate Docker with GCP:
+
+```sh
+gcloud auth configure-docker us-east1-docker.pkg.dev
+```
+
+Tag the Docker image:
+
+```sh
+docker tag eventarc-app:latest us-east1-docker.pkg.dev/hallowed-valve-466712-m0/eventarc-app-docker-repo/eventarc-app:latest
+```
+
+Push the Docker image:
+
+```sh
+docker push us-east1-docker.pkg.dev/hallowed-valve-466712-m0/eventarc-app-docker-repo/eventarc-app:latest
+```
+
+---
+
+### 3. Deploy Docker Image to Cloud Run
+
+Create the Terraform script for Cloud Run.
+
+Enable the Cloud Run API:
+
+```sh
+gcloud services enable run.googleapis.com
+```
+
+Deploy using Terraform:
+
+```sh
+terraform plan
+terraform apply
+# Type 'yes' when prompted
+```
+
+After deployment, the Cloud Run service URL will be visible in the GCP Console. Test the service using [Postman](https://www.postman.com/).
+
+---
+
+### 4. Create Cloud Storage Bucket
+
+Create the Terraform script for Cloud Storage.
+
+No need to manually enable Cloud Storage; it is enabled by default.
+
+Apply Terraform:
+
+```sh
+terraform plan
+terraform apply
+# Type 'yes' when prompted
+```
+
+Upload sample files via the GCP Console and access them using the public URL.
+
+---
+
+### 5. Create Firestore Database
+
+Enable the Firestore API via the GCP Console.
+
+> **Note:** Creating Firestore databases using Terraform scripts is not fully supported. Use the GCP Console for this step.
+
+In the Firestore Console:
+- Click **Start Collection**
+- Enter a collection name (e.g., `users`)
+- Add a field (e.g., `name: jack`)
+- Click **SAVE**
+
+---
+
+### 6. Create Eventarc Trigger for Cloud Storage
+
+Create the Terraform script for the Eventarc trigger.
+
+Enable the Eventarc API via the GCP Console.
+
+Apply Terraform:
+
+```sh
+terraform plan
+terraform apply
+# Type 'yes' when prompted
+```
+
+Verify the trigger under **Cloud Run > Service > Triggers**.  
+Uploading a new file to Cloud Storage will trigger an API call to the Cloud Run service.
+
+---
+
+### 7. Create Eventarc Trigger for Firestore
+
+> **Note:** Creating Eventarc triggers for Firestore using Terraform is not fully supported. Use the GCP Console for this step.
+
+After creating the trigger, verify it under **Cloud Run > Service > Triggers**.
+
+To test:
+- In Firestore Console, under the `users` collection, add a document (e.g., `name: julie`)
+- Click **SAVE**
+- This will trigger an API call to the Cloud Run service.
+
+---
+
+## Summary
+
+This guide automates the setup of Eventarc triggers for Cloud Storage and Firestore using Terraform and Java Spring Boot APIs, enabling seamless event-driven workflows on Google Cloud Platform.
