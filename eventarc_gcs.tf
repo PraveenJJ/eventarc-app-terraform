@@ -45,7 +45,7 @@ resource "google_eventarc_trigger" "eventarc_trigger_gcs_finalized" {
     cloud_run_service {
       service = var.service_name
       region  = var.region
-      path    = "/tmsgis/loader/process"
+      path    = "/example/cloudstorage/event"
     }
   }
   
